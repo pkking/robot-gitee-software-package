@@ -43,6 +43,14 @@ cd $repo
 rpm2cpio *.rpm | cpio -div
 rm -rf *.rpm
 
+# get the files size more than 50MB but not in .git folder
+large_files=$(find . -path '*/.git' -prune -o -type f -size +50M -print)
+
+if [ ! -z "${large_files}" ]; then
+  git lfs install
+  git lfs track --filename ${large_files}
+fi
+
 git config user.username $user
 git config user.email $email
 git add .
